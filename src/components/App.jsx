@@ -1,19 +1,64 @@
-import { Profile } from "./Profile/profile";
-import user from "components/data/user.json";
-import data from "components/data/data.json";
-import friends from "components/data/friends.json"
-import transactions from "components/data/transactions.json"
-import { Stats } from "./Stats/stats";
-import { Friends } from "./FriendList/frends";
-import { Transactions } from "./Transactions/transactions";
+import { Component } from "react";
+import { FeedbackOp } from "./FeedbackOptions/Feedback";
+import { Notification } from "./Notification/Notification";
+import { Section } from "./Section/Section";
+import { Statistics } from "./Statistics/Statistics";
+import { Styles } from "./Styles";
+
+export class App extends Component{
+
+    state = {
+      Good: 0,
+      Neutral: 0,
+      Bad: 0,
+  };
+
+  totalFeedback = () => {
+    return Object.values(this.state).reduce((ac, item) => (ac += item));
+  };
+
+ positiveFeedback = () => {
+    const res = Math.round((this.state.good / this.totalFeedback()) * 100);
+    return !Number.isNaN(res) ? res : 0;
+  };
 
 
-export const App = () => {
-  return <div>
-    <Profile user={user} />
-    <Stats title="Upload stats" stats={data} />
-    <Friends friends={friends} />
-    <Transactions transactions={transactions} />
-  </div>    
-};
+  onFeedback = (option) => {
+    this.setState((prevState) => ({
+      [option]: prevState[option] + 1,
+    }));
+  };
 
+  render() {
+    const { good, neutral, bad } = this.state;
+    const keys = Object.keys(this.state);
+    const total = this.totalFeedback();
+    const positivePercentage = this.positiveFeedback();
+
+    return (
+      <>
+        <Styles />
+        <Section title="Please leave feedback">
+          <FeedbackOp
+            options={keys}
+            onLeaveFeedback={this.onFeedback}
+          />
+        </Section>
+        <Section title="Statistics">
+          {total ? (
+            <Statistics
+              good={good}
+              neutral={neutral}
+              bad={bad}
+              total={total}
+              positivePercentage={positivePercentage}
+            />
+          ) : (
+            <Notification message="No feedback given" />
+          )}
+        </Section>
+      </>
+    );
+  }
+}
+//test
