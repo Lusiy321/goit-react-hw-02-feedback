@@ -1,30 +1,28 @@
-import { Component } from "react";
-import { FeedbackOp } from "./FeedbackOptions/Feedback";
-import { Notification } from "./Notification/Notification";
-import { Section } from "./Section/Section";
-import { Statistics } from "./Statistics/Statistics";
-import { Styles } from "./Styles";
+import { Component } from 'react';
+import { FeedbackOp } from './FeedbackOptions/Feedback';
+import { Notification } from './Notification/Notification';
+import { Section } from './Section/Section';
+import { Statistics } from './Statistics/Statistics';
+import { Styles } from './Styles';
 
-export class App extends Component{
-
-    state = {
-      Good: 0,
-      Neutral: 0,
-      Bad: 0,
+export class App extends Component {
+  state = {
+    good: 0,
+    neutral: 0,
+    bad: 0,
   };
 
   totalFeedback = () => {
     return Object.values(this.state).reduce((ac, item) => (ac += item));
   };
 
- positiveFeedback = () => {
+  positiveFeedback = () => {
     const res = Math.round((this.state.good / this.totalFeedback()) * 100);
     return !Number.isNaN(res) ? res : 0;
   };
 
-
-  onFeedback = (option) => {
-    this.setState((prevState) => ({
+  onFeedback = option => {
+    this.setState(prevState => ({
       [option]: prevState[option] + 1,
     }));
   };
@@ -39,10 +37,7 @@ export class App extends Component{
       <>
         <Styles />
         <Section title="Please leave feedback">
-          <FeedbackOp
-            options={keys}
-            onLeaveFeedback={this.onFeedback}
-          />
+          <FeedbackOp options={keys} onLeaveFeedback={this.onFeedback} />
         </Section>
         <Section title="Statistics">
           {total ? (
